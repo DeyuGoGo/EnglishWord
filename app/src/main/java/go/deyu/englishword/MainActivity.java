@@ -40,7 +40,7 @@ public class MainActivity extends BaseFragmentActivityWithEWM {
             // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_head_container, HeadFragment)
-                    .add(R.id.fragment_body_container, BodyFragment , "BodyFragment")
+                    .add(R.id.fragment_body_container, BodyFragment)
                     .commit();
         }    }
 
