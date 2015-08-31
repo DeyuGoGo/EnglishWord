@@ -8,13 +8,14 @@ import java.util.List;
 
 import data.EnglishWord;
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
 /**
  * Created by huangeyu on 15/8/22.
  */
-public class EnglishWordModel {
+public class EnglishWordModel implements EnglishWordInterface {
 
     private Context mContext;
     private Realm realm;
@@ -24,29 +25,35 @@ public class EnglishWordModel {
     public EnglishWordModel(Context context){
         this.mContext = context;
         realm = Realm.getInstance(mContext);
-        RealmQuery<EnglishWord> query = realm.where(EnglishWord.class);
-        englishWords = query.findAll();
+        refresh();
     }
 
+    public EnglishWordModel(RealmConfiguration realmConfiguration){
+        realm = Realm.getInstance(realmConfiguration);
+        refresh();
+    }
+
+    @Override
     public void refresh(){
         RealmQuery<EnglishWord> query = realm.where(EnglishWord.class);
         englishWords = query.findAll();
     }
 
-
-    public void addWord(final String engWord , final String customWord){
+    @Override
+    public void addWord(final EnglishWord word){
         realm.executeTransaction(new Realm.Transaction() {
                                      @Override
                                      public void execute(Realm realm) {
                                          EnglishWord ew = realm.createObject(EnglishWord.class);
-                                         ew.setEnglish_wrod(engWord);
-                                         ew.setCustom_wrod(customWord);
+                                         ew.setEnglish_wrod(word.getEnglish_wrod());
+                                         ew.setCustom_wrod(word.getCustom_wrod());
                                      }
                                  }
         );
         onDataChange();
     }
 
+    @Override
     public void deleteWord(final EnglishWord ew) {
         realm.beginTransaction();
         ew.removeFromRealm();
@@ -54,18 +61,38 @@ public class EnglishWordModel {
         onDataChange();
     }
 
+    @Override
+    public void clearWrods(){
+        realm.beginTransaction();
+        realm.clear(EnglishWord.class);
+        realm.commitTransaction();
+    }
+
+    @Override
+    public void close() {
+        if(realm!=null)
+            realm.close();
+    }
+
+    @Override
     public List<EnglishWord> getEnglishWords(){
         return englishWords;
     }
 
+    @Override
     public void registerOnModelDataChangeListener(@NonNull OnModelDataChangeListener listener){
         mListeners.add(listener);
     }
 
+    @Override
     public void unregisterOnModelDataChangeListener(@NonNull OnModelDataChangeListener listener){
         if(mListeners.indexOf(listener)==-1)return;
         mListeners.remove(listener);
     }
+
+
+
+
 
     private void onDataChange(){
         for(OnModelDataChangeListener l : mListeners){
