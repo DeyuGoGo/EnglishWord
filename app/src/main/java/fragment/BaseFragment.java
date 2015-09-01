@@ -5,20 +5,20 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import butterknife.ButterKnife;
-import go.deyu.englishword.MainActivity;
-import model.EnglishWordModel;
+import go.deyu.englishword.BaseFragmentActivityWithEWM;
+import model.EnglishWordInterface;
 
 /**
  * Created by huangeyu on 15/5/20.
  */
 public class BaseFragment extends Fragment {
 
-    protected EnglishWordModel model;
+    protected EnglishWordInterface model;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        model = ((MainActivity)getActivity()).getEnglishWordModel();
+        model = ((BaseFragmentActivityWithEWM)getActivity()).getEnglishWordModel();
     }
 
 
