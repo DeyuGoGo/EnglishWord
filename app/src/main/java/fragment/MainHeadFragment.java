@@ -2,15 +2,19 @@ package fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import butterknife.BindString;
 import butterknife.OnClick;
+import data.EnglishWord;
+import go.deyu.englishword.ExamActivity;
 import go.deyu.englishword.R;
 
 /**
@@ -34,6 +38,16 @@ public class MainHeadFragment extends BaseFragment {
         showAddDialog();
     }
 
+    @OnClick(R.id.btn_exam)
+    void gotoEaxmActivity(){
+        if(model.getEnglishWords().size()<10){
+            Toast.makeText(getActivity(), "Words not enough , plesae add word above ten", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        startActivity(new Intent(getActivity(),ExamActivity.class));
+        getActivity().finish();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_main_head, container, false);
@@ -51,7 +65,10 @@ public class MainHeadFragment extends BaseFragment {
                 dialog_add_LL).setPositiveButton(mConfirmString, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                model.addWord(etEngWord.getText().toString(),etCustomWord.getText().toString());
+                EnglishWord ew = new EnglishWord();
+                ew.setEnglish_wrod(etEngWord.getText().toString());
+                ew.setCustom_wrod(etCustomWord.getText().toString());
+                model.addWord(ew);
             }
         })
                 .setNegativeButton(mCancelString, null).show();
