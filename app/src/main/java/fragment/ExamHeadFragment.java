@@ -15,6 +15,7 @@ import go.deyu.englishword.R;
  */
 public class ExamHeadFragment extends BaseExamFragment {
 
+
     @Bind(R.id.tv_title)TextView mTitle_tv;
 
 

@@ -28,17 +28,19 @@ public class QuestionModel implements QuestionModelInterface{
         List<Question> questions = new ArrayList<Question>();
         for(int i = 0 ; i < many ; i++){
             Question q = new Question();
-            int currentAnswerLocation = makeRandomNumberArray(1,4)[0];
             EnglishWord question =  mEnglishWords.get(a[i]);
             q.setQuestionWord(question);
             q.setAnsWords(getRandomWrods(4));
-            q.getAnsWords().set(currentAnswerLocation, question);
+            if(!q.getAnsWords().contains(question)) {
+                int currentAnswerLocation = makeRandomNumberArray(1,4)[0];
+                q.getAnsWords().set(currentAnswerLocation, question);
+            }
             questions.add(q);
         }
         return questions;
     }
 
-    private List<EnglishWord> getRandomWrods(int many){
+    public List<EnglishWord> getRandomWrods(int many){
         List<EnglishWord> words  = new ArrayList<EnglishWord>();
         int a[] =  makeRandomNumberArray(many , mEnglishWords.size());
         for(int i = 0 ; i < many ; i ++){
@@ -47,21 +49,21 @@ public class QuestionModel implements QuestionModelInterface{
         return words;
     }
 
-    private int[] makeNumberArray(int range){
-        int a[] = new int[range];
-        for(int i = 0 ; i < range ; i ++){
-            a[i] = i;
-        }
-        return a;
-    }
-
-    private int[] makeRandomNumberArray(int pick , int range){
+    public int[] makeRandomNumberArray(int pick , int range){
         int[] a = makeNumberArray(range);
         for(int i = 0 ; i < pick ; i++){
             int random = r.nextInt(range);
             int temp = a[i];
-            a[i] = random;
+            a[i] = a[random];
             a[random] = temp;
+        }
+        return a;
+    }
+
+    private int[] makeNumberArray(int range){
+        int a[] = new int[range];
+        for(int i = 0 ; i < range ; i ++){
+            a[i] = i;
         }
         return a;
     }

@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import exception.QueueEmptyException;
+
 /**
  * Created by huangeyu on 15/8/31.
  */
@@ -24,7 +26,8 @@ public class ObserverQueue<E> {
         mQueue.addAll(elements);
     }
 
-    public void next(){
+    public void next() throws QueueEmptyException{
+        if(mQueue.isEmpty())throw new QueueEmptyException();
         mNowElement = mQueue.poll();
         onNext(mNowElement);
     }
