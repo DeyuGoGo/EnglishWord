@@ -29,4 +29,6 @@ public class ExamHeadFragment extends BaseExamFragment {
     public void OnNext(Question mNextElement) {
         mTitle_tv.setText("Now is " + mQueue.getNumber() + " Question");
     }
+
+
 }

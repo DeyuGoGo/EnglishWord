@@ -1,6 +1,7 @@
 package fragment;
 
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -19,10 +20,15 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import data.EnglishWord;
+import data.ExamMode;
 import data.Question;
 import exception.QueueEmptyException;
+import go.deyu.englishword.ExamActivity;
+import go.deyu.englishword.ExamConfig;
 import go.deyu.englishword.MainActivity;
 import go.deyu.englishword.R;
+import go.deyu.englishword.databinding.FragmentExamBodyBinding;
 import tts.AndroidTTS;
 import tts.TTStoSpeak;
 
@@ -38,6 +44,8 @@ public class ExamBodyFragment extends BaseExamFragment {
     private int total = 0, score = 0 ;
 
     private final Handler mUIHandler;
+
+    private ExamConfig config;
 
     private static final int WHAT_ARG_CORRECT = 0;
     private static final int WHAT_ARG_ERROR = 1;
@@ -63,7 +71,9 @@ public class ExamBodyFragment extends BaseExamFragment {
 
     @OnClick({R.id.btn_ans1 , R.id.btn_ans2,R.id.btn_ans3,R.id.btn_ans4})
     public void ans(View v){
-        boolean isCorrect = ((Button) v).getText().toString().equals(mQueue.getLastPullElement().getQuestionWord().getCustom_wrod());
+        int i = AnsButtons.indexOf(v);
+        Question q = mQueue.getLastPullElement();
+        boolean isCorrect = q.getQuestionWord().getEnglish_wrod().equals(q.getAnsWords().get(i).getEnglish_wrod()) ;
         int arg = isCorrect ? WHAT_ARG_CORRECT : WHAT_ARG_ERROR;
 //      0 No to use
         mUIHandler.sendMessage(mUIHandler.obtainMessage(WHAT_ANS_QUESTION, arg, 0));
@@ -89,6 +99,7 @@ public class ExamBodyFragment extends BaseExamFragment {
                 switch (msg.what) {
                     case WHAT_ANS_QUESTION:
                         ansQuestion(msg.arg1);
+                        refreshScore();
                         try {
                             mQueue.next();
                         } catch (QueueEmptyException e) {
@@ -106,7 +117,15 @@ public class ExamBodyFragment extends BaseExamFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_exam_body, container, false);
+        FragmentExamBodyBinding binding = DataBindingUtil.inflate(
+                inflater,
+                R.layout.fragment_exam_body,
+                container,
+                false);
+        ExamMode mode =(ExamMode)getActivity().getIntent().getExtras().get(ExamActivity.EXTRA_KEY_EXAM_MODE);
+        config = new ExamConfig(mode);
+        binding.setConfig(config);
+        return binding.getRoot();
     }
 
     @Override
@@ -129,12 +148,9 @@ public class ExamBodyFragment extends BaseExamFragment {
 
     @Override
     public void OnNext(Question mNextElement) {
-        String QuestionWord = mNextElement.getQuestionWord().getEnglish_wrod();
-        mQuestionTv.setText(QuestionWord);
-        for(int i = 0; i < AnsButtons.size(); i++){
-            AnsButtons.get(i).setText(mNextElement.getAnsWords().get(i).getCustom_wrod());
-        }
-        playQuestionVoice();
+        setupQuestionViews(mNextElement);
+        if(config.isHasVoice())
+            playQuestionVoice();
     }
 
     private void setupAnsButtons(){
@@ -143,6 +159,17 @@ public class ExamBodyFragment extends BaseExamFragment {
         AnsButtons.add(mAnsBtn2);
         AnsButtons.add(mAnsBtn3);
         AnsButtons.add(mAnsBtn4);
+    }
+
+    private void setupQuestionViews(Question mNextElement){
+        EnglishWord QuestionEnglishWord = mNextElement.getQuestionWord();
+        String QuestionWord  = config.getQuestionLanguage() == ExamConfig.ENGLISH ? QuestionEnglishWord.getEnglish_wrod() : QuestionEnglishWord.getCustom_wrod();
+        mQuestionTv.setText(QuestionWord);
+        for(int i = 0; i < AnsButtons.size(); i++){
+            EnglishWord AnsEnglishWord = mNextElement.getAnsWords().get(i);
+            String AnsString = config.getQuestionLanguage() == ExamConfig.TRANSLATIONS ? AnsEnglishWord.getCustom_wrod() : AnsEnglishWord.getEnglish_wrod();
+            AnsButtons.get(i).setText(AnsString);
+        }
     }
 
     private void finishQuestion(){
@@ -157,7 +184,6 @@ public class ExamBodyFragment extends BaseExamFragment {
         }
         if(arg == WHAT_ARG_ERROR){
         }
-        refreshScore();
     }
 
     private void refreshScore(){

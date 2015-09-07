@@ -51,7 +51,7 @@ public class MainBodySwipeListViewAdapter extends BaseSwipeAdapter {
 //    TODO Not need
     @Override
     public long getItemId(int position) {
-        return 1;
+        return position;
     }
 
     @Override

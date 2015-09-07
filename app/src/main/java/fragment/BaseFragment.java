@@ -11,7 +11,7 @@ import model.EnglishWordInterface;
 /**
  * Created by huangeyu on 15/5/20.
  */
-public class BaseFragment extends Fragment {
+public abstract class BaseFragment extends Fragment {
 
     protected EnglishWordInterface model;
 
