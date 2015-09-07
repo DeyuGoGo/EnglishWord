@@ -15,7 +15,7 @@ import data.Question;
 public class QuestionModel implements QuestionModelInterface{
 
     private List<EnglishWord> mEnglishWords;
-    private Random r ;
+    protected Random r ;
 
     public QuestionModel(@NonNull List<EnglishWord> EnglishWords){
         this.mEnglishWords = EnglishWords;

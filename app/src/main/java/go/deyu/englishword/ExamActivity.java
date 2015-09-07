@@ -15,6 +15,7 @@ import model.QuestionModelInterface;
  */
 public class ExamActivity extends BaseFragmentActivityWithEWM{
 
+    public static final String EXTRA_KEY_EXAM_MODE = "ExamMode";
     private QuestionModelInterface mQuestionModel;
     private ObserverQueue<Question> mObserverQueue;
     private static final int QuestionAmount = 10;
