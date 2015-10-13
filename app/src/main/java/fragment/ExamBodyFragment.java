@@ -167,7 +167,7 @@ public class ExamBodyFragment extends BaseExamFragment {
         mQuestionTv.setText(QuestionWord);
         for(int i = 0; i < AnsButtons.size(); i++){
             EnglishWord AnsEnglishWord = mNextElement.getAnsWords().get(i);
-            String AnsString = config.getQuestionLanguage() == ExamConfig.TRANSLATIONS ? AnsEnglishWord.getCustom_wrod() : AnsEnglishWord.getEnglish_wrod();
+            String AnsString = config.getAnswerLanguage() == ExamConfig.ENGLISH ? AnsEnglishWord.getEnglish_wrod() : AnsEnglishWord.getCustom_wrod();
             AnsButtons.get(i).setText(AnsString);
         }
     }

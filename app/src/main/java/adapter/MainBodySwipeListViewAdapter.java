@@ -34,7 +34,6 @@ public class MainBodySwipeListViewAdapter extends BaseSwipeAdapter {
         this.mLayoutInflater = activity.getLayoutInflater();
         this.mEnglishWord = EnglishWord;
         mListeners = new ArrayList<SwipeLayoutListener>();
-
     }
 
 
