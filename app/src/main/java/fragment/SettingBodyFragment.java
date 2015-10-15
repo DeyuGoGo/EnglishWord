@@ -9,6 +9,7 @@ import android.widget.Switch;
 
 import butterknife.Bind;
 import go.deyu.englishword.R;
+import go.deyu.englishword.SettingConfig;
 
 /**
  * Created by huangeyu on 15/5/18.
@@ -29,9 +30,7 @@ public class SettingBodyFragment extends BaseFragment {
         mScreenLockSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                } else{
-                }
+                SettingConfig.setScreenLockStatus(getActivity(),isChecked);
             }
         });
     }
