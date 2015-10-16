@@ -3,7 +3,10 @@ package service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.view.WindowManager;
 
+import go.deyu.englishword.ScreenLockView;
+import go.deyu.englishword.SettingConfig;
 import go.deyu.util.LOG;
 import receiver.ScreenOnReceiver;
 
@@ -33,10 +36,14 @@ public class ScreenLockService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if(intent.getAction() == null) return START_STICKY;
+        if(intent == null || intent.getAction() == null) return START_STICKY;
 
         if(intent.getAction().equals(ACTION_ON_SCREEN_ON)){
             LOG.d(TAG,"ACTION_ON_SCREEN_ON");
+
+            if(SettingConfig.getScreenLockStatus(this))
+                showScreenLockView();
+
         }
         return START_STICKY;
     }
@@ -63,9 +70,16 @@ public class ScreenLockService extends Service {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-//    private void prepareQuestionQueue(){
-//        mQuestionModel = new QuestionModel(englishWordModel.getEnglishWords());
-//        mObserverQueue = new ObserverQueue<Question>(mQuestionModel.getRandomQuestions(QuestionAmount));
-//    }
+    private void showScreenLockView(){
+        ScreenLockView view = new ScreenLockView(this);
+        WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+        params.width = WindowManager.LayoutParams.MATCH_PARENT;
+        params.height = WindowManager.LayoutParams.MATCH_PARENT;
+        params.type = WindowManager.LayoutParams.TYPE_PRIORITY_PHONE;
+        params.flags |= WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+        params.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
+        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+        wm.addView(view, params);
+    }
 
 }

@@ -5,6 +5,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import data.EnglishWord;
 import fragment.MainBodyFragment;
 import fragment.MainHeadFragment;
 import fragment.NavigationDrawerFragment;
@@ -24,6 +32,7 @@ public class MainActivity extends BaseFragmentActivityWithEWM implements Navigat
         if (savedInstanceState != null) {
             return;
         }
+        initaliztion();
 //            Drawer
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -70,5 +79,33 @@ public class MainActivity extends BaseFragmentActivityWithEWM implements Navigat
         }
     }
 
-
+    private List<EnglishWord> getSampleWords(){
+        List<EnglishWord> samplesWords = new ArrayList<EnglishWord>();
+        InputStream is = getResources().openRawResource(R.raw.samplewrods);
+        String str="";
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        if(br!=null){
+            try {
+                while((str = br.readLine())!=null){
+                    String[] token = str.split("/");
+                    EnglishWord word = new EnglishWord();
+                    word.setEnglish_wrod(token[0]);
+                    word.setCustom_wrod(token[1]);
+                    samplesWords.add(word);
+                }
+            } catch (IOException e) {
+                LOG.d(TAG,"Exception : " + e);
+            }
+        }
+        return samplesWords;
+    }
+    private void initaliztion(){
+        if(SettingConfig.getInitStatus(this))return;
+        List<EnglishWord> sampleWords = getSampleWords();
+        LOG.d(TAG, "sampleWords size : " + sampleWords.size());
+        for(EnglishWord w: sampleWords){
+            englishWordModel.addWord(w);
+        }
+        SettingConfig.setInitStatus(this,true);
+    }
 }

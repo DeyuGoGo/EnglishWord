@@ -10,11 +10,14 @@ import android.widget.Switch;
 import butterknife.Bind;
 import go.deyu.englishword.R;
 import go.deyu.englishword.SettingConfig;
+import go.deyu.util.LOG;
 
 /**
  * Created by huangeyu on 15/5/18.
  */
 public class SettingBodyFragment extends BaseFragment {
+
+    private final String TAG = getClass().getSimpleName();
 
     @Bind(R.id.switch_setting_sereen_lock_test)Switch mScreenLockSwitch ;
 
@@ -27,9 +30,11 @@ public class SettingBodyFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mScreenLockSwitch.setChecked(SettingConfig.getScreenLockStatus(getActivity()));
         mScreenLockSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                LOG.d(TAG,"isChecked : " + isChecked);
                 SettingConfig.setScreenLockStatus(getActivity(),isChecked);
             }
         });
