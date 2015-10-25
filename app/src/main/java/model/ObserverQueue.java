@@ -32,6 +32,14 @@ public class ObserverQueue<E> {
         onNext(mNowElement);
     }
 
+    public void add(E element){
+        mQueue.add(element);
+    }
+
+    public void addAll(List<E> elements){
+        mQueue.addAll(elements);
+    }
+
     public int getNumber() {
         return number;
     }

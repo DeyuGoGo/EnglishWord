@@ -5,7 +5,8 @@ import data.ExamMode;
 /**
  * Created by huangeyu on 15/9/3.
  */
-public class ExamConfig {
+public class ExamConfig{
+
     public static final int ENGLISH = 0x00 , TRANSLATIONS = 0x01;
     private final boolean hasVoice;
     private final boolean hasQuestionText;
