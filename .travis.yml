@@ -1,0 +1,10 @@
+language: android
+jdk: oraclejdk7
+
+android:
+  components:
+    - build-tools-23.0.1
+
+script:
+  - android list target
+  - ./gradlew connectedAndroidTest
